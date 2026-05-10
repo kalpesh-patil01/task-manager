@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Welcome, {{ current_user.username }}!</h1>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">Add New Task</button>
+</div>
+
+<!-- analytics cards  -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h6>Total Tasks</h6>
+                <h2 id="stat-total">0</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h6>Completed</h6>
+                <h2 id="stat-completed">0</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <h6>Pending</h6>
+                <h2 id="stat-pending">0</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h6>Success Rate</h6>
+                <h2 id="stat-percent">0%</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--task table -->
+<div class="table-responsive bg-white p-3 shadow-sm rounded">
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="task-table-body">
+            {% for task in tasks %}
+            <tr id="task-{{ task.id }}">
+                <td>{{ task.title }}</td>
+                <td><span class="badge bg-secondary">{{ task.priority }}</span></td>
+                <td><span class="badge {% if task.status == 'Completed' %}bg-success{% else %}bg-danger{% endif %}">{{ task.status }}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-outline-success" onclick="completeTask({{ task.id }})">Complete</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteTask({{ task.id }})">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- add task model -->
+<div class="modal fade" id="addTaskModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5>Add Task</h5></div>
+            <div class="modal-body">
+                <input type="text" id="taskTitle" class="form-control mb-2" placeholder="Task Title">
+                <select id="taskPriority" class="form-control">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="submitTask()">Save Task</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- js file for webSocket and api -->
+<script src="{{ url_for('static', filename='js/socket_app.js') }}"></script>
+{% endblock %}
