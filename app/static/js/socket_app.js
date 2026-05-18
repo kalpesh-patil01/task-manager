@@ -16,7 +16,7 @@ function refreshAnalytics() {
         .catch(err => console.error("Analytics Error:", err));
 }
 
-// 2. Add Task (REST API)
+// Add Task rest api
 function submitTask() {
     const title = document.getElementById('taskTitle').value;
     const priority = document.getElementById('taskPriority').value;
@@ -30,19 +30,19 @@ function submitTask() {
         if(response.ok) {
             bootstrap.Modal.getInstance(document.getElementById('addTaskModal')).hide();
             document.getElementById('taskTitle').value = '';
-            // socket.emit karnyachi garaj nahi, backend 'emit' karel.
+            // backend emit automatically 
         }
     });
 }
 
-// 3. Delete Task
+// delete task
 function deleteTask(id) {
     if(confirm("Are you sure?")) {
         fetch(`/api/tasks/${id}`, { method: 'DELETE' });
     }
 }
 
-// 4. Complete Task
+// complete task
 function completeTask(id) {
     fetch(`/api/tasks/${id}`, {
         method: 'PUT',
@@ -51,27 +51,18 @@ function completeTask(id) {
     });
 }
 
-// ==========================================
-// WEBSOCKET LISTENERS
-// ==========================================
-
+//websocket listner 
 socket.on('task_updated', (data) => {
     console.log("Real-time Update:", data.message);
     
-    // 1. Stats update kara
+    // stats update 
     refreshAnalytics();
     
-    // 2. Page reload na karta fakt table refresh karaycha asel tar:
-    // Pan tula jar table code lihaycha nase tar reload thevle tari chalel.
-    // location.reload(); 
-    
-    // Dashboard var aslelya table la refresh karnya sathi he vapru shakto:
+    //refresh dashbboard content 
     fetchTasksTable(); 
 });
 
-// Table dynamically load karnyacha function (Optional)
+//table dynamically loader function
 function fetchTasksTable() {
-    // Jar tu dashboard page var asashil tar hya function mule page reload na karta
-    // fakt table cha part refresh hou shakto (AJAX vaprun)
-    // Sadhyasathi location.reload() pan chalel.
+   
 }
